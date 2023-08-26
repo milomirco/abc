@@ -30,7 +30,7 @@ echo -e "\e[33mEstado de conexión\e[0m"
 
 echo ""
 
-pacman -S archlinux-keyring
+pacman -Sy archlinux-keyring
 
 CRE=$(tput setaf 1)
 CYE=$(tput setaf 3)
