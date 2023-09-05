@@ -33,7 +33,7 @@ clear
 
 # Actualizando archlinux  keyring
 echo -e "\e[33mActualizando archkeyring\e[0m"
-pacman -Sy archlinux-keyring
+pacman -Sy archlinux-keyring --noconfirm
 
 confir
 clear
@@ -339,7 +339,7 @@ echo ""
 echo -e "\t\e[33mInstalando gnome y gdm\e[0m"
 # 		Instala GNOME, GDM y NetworkManager
 
-$CHROOT pacman -S gnome gdm pipewire pipewire-pulse firefox git nano neovim gimp lha lrzip lzip p7zip lbzip2 arj lzop cpio unrar unzip zip unarj xdg-utils --noconfirm
+$CHROOT pacman -S gnome gdm pipewire pipewire-pulse firefox git nano neovim gimp gum tmux jq lha lrzip lzip p7zip lbzip2 arj lzop cpio unrar unzip zip unarj xdg-utils --noconfirm
 echo ""
 confir
 sleep 3
@@ -348,6 +348,9 @@ clear
 #		Instalando paru
 echo "cd && git clone https://aur.archlinux.org/paru.git && cd paru && makepkg -si --noconfirm && cd" | $CHROOT su "$USR"
 
+echo "cd && paru -S tdrop-git --skipreview --noconfirm --removemake" | $CHROOT su "$USR"
+echo "cd && paru -S gnome-tweaks --skipreview --noconfirm --removemake" | $CHROOT su "$USR"
+echo "cd && paru -S extension-manager --skipreview --noconfirm --removemake" | $CHROOT su "$USR"
 #echo "cd && paru -S eww-x11 simple-mtpfs tdrop-git --skipreview --noconfirm --removemake" | $CHROOT su "$USR"
 #echo "cd && paru -S zramswap stacer --skipreview --noconfirm --removemake" | $CHROOT su "$USR"
 #echo "cd && paru -S spotify spotify-adblock-git mpv-git popcorntime-bin --skipreview --noconfirm --removemake" | $CHROOT su "$USR"
@@ -363,7 +366,9 @@ echo -e "\t\e[33mActivando Servicios\e[0m"
 $CHROOT systemctl enable NetworkManager.service
 $CHROOT systemctl enable gdm.service
 #echo "xdg-user-dirs-update" | $CHROOT su "$USR"
-
+sleep 5
+confir
+clear
 #          Xorg
 
 cat >>/mnt/etc/X11/xorg.conf.d/00-keyboard.conf <<EOL
