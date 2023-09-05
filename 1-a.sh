@@ -20,7 +20,7 @@ network() {
 	echo ""
 }
 
-echo -e "\e[33mEstado de conexión\e[0m"
+echo -e "\e[33mEstado de conexión...\e[0m"
 
 if ping -q -c 2 -W 2 8.8.8.8 >/dev/null; then
 	network
