@@ -20,19 +20,21 @@ network() {
 	echo ""
 }
 
-echo -e "\e[33mEstado de conexión...\e[0m"
+echo -e "\t\e[33mEstado de conexión...\e[0m"
 
 if ping -q -c 2 -W 2 8.8.8.8 >/dev/null; then
 	network
 else
-	echo -e "\e[31mSistema desconectado\e[0m"
+	echo -e "\t\e[31mSistema desconectado\e[0m"
 fi
 
 echo ""
 clear
 
+
+echo -e "\t\e[33m-------------------\e[0m"
 # Actualizando archlinux  keyring
-echo -e "\e[33mActualizando archkeyring\e[0m"
+echo -e "\t\e[33mActualizando archkeyring\e[0m"
 pacman -Sy archlinux-keyring --noconfirm
 
 confir
@@ -66,7 +68,7 @@ conten() {
 echo ""
 confir
 echo ""
-
+echo -e "\t\e[33m-------------------\e[0m"
 echo -e "\t\e[33mModo de Arranque\e[0m"
 echo ""
 sleep 2
@@ -84,7 +86,7 @@ else
 fi
 
 #          Obteniendo información usuario, root, Hostname
-echo ""
+echo -e "\t\e[33m-------------------\e[0m"
 echo -e "\t\e[33mObteniendo información necesaria\e[0m"
 
 while true; do
@@ -136,6 +138,7 @@ clear
 echo -e "\t\e[33mSelecciona el disco para la instalacion\e[0m"
 
 # Mostrar información de los discos disponibles
+echo -e "\t\e[33m-------------------\e[0m"
 echo -e "\t\e[33mDiscos disponibles:\e[0m"
 echo ""
 lsblk -d -e 7,11 -o NAME,SIZE,TYPE,MODEL
@@ -143,7 +146,7 @@ echo "----"
 echo ""
 
 # Seleccionar el disco para la instalación de Arch Linux
-
+echo -e "\t\e[33m-------------------\e[0m"
 PS3="Escoge la particion donde Arch Linux se instalara: "
 select drive in $(lsblk -d | awk '{print "/dev/" $1}' | grep 'sd\|hd\|vd\|nvme\|mmcblk'); do
 	if [ "$drive" ]; then
@@ -153,7 +156,7 @@ done
 clear
 
 #          Creando y Montando particion raiz
-
+echo -e "\t\e[33m-------------------\e[0m"
 echo -e "\t\e[33mCreando Particiones\e[0m"
 
 cfdisk "${drive}"
@@ -162,8 +165,8 @@ clear
 echo -e "\t\e[33mFormatenado y Montando Particiones\e[0m"
 
 lsblk "${drive}" -I 8 -o NAME,SIZE,FSTYPE,PARTTYPENAME
-echo
-
+echo ""
+echo -e "\t\e[33m-------------------\e[0m"
 PS3="Escoge la particion raiz que acabas de crear donde Arch Linux se instalara: "
 select partroot in $(fdisk -l "${drive}" | grep Linux | cut -d" " -f1); do
 	if [ "$partroot" ]; then
@@ -175,14 +178,14 @@ select partroot in $(fdisk -l "${drive}" | grep Linux | cut -d" " -f1); do
 		break
 	fi
 done
-
+echo -e "\t\e[33m-------------------\e[0m"
 confir
 clear
 
 #          Creando y Montando SWAP
-
+echo -e "\t\e[33m-------------------\e[0m"
 echo -e "\t\e[33mConfigurando SWAP\e[0m"
-
+echo -e "\t\e[33m-------------------\e[0m"
 PS3="Escoge la particion SWAP: "
 select swappart in $(fdisk -l | grep -E "swap" | cut -d" " -f1) "No quiero swap" "Crear archivo swap"; do
 	if [ "$swappart" = "Crear archivo swap" ]; then
@@ -218,7 +221,7 @@ done
 clear
 
 #          Información
-
+echo -e "\t\e[33m-------------------\e[0m"
 printf "\n\n%s\n\n" "--------------------"
 printf " User:      %s%s%s\n" "${CBL}" "$USR" "${CNC}"
 printf " Hostname:  %s%s%s\n" "${CBL}" "$HNAME" "${CNC}"
@@ -232,6 +235,7 @@ elif [ "$swappart" ]; then
 fi
 
 echo
+echo -e "\t\e[33m-------------------\e[0m"
 printf "\n Arch Linux se instalara en el disco %s[%s%s%s%s%s]%s en la particion %s[%s%s%s%s%s]%s\n\n\n" "${CYE}" "${CNC}" "${CRE}" "${drive}" "${CNC}" "${CYE}" "${CNC}" "${CYE}" "${CNC}" "${CBL}" "${partroot}" "${CNC}" "${CYE}" "${CNC}"
 
 while true; do
@@ -244,7 +248,7 @@ while true; do
 done
 
 #          Pacstrap base system
-
+echo -e "\t\e[33m-------------------\e[0m"
 echo -e "\t\e[33mInstalando sistema base\e[0m"
 pacstrap /mnt base base-devel linux linux-firmware networkmanager xdg-user-dirs nano git
 
@@ -253,7 +257,7 @@ confir
 clear
 
 #          Generating FSTAB
-
+echo -e "\t\e[33m-------------------\e[0m"
 echo -e "\t\e[33mGenerando FSTAB\e[0m"
 
 genfstab -U /mnt >>/mnt/etc/fstab
@@ -263,7 +267,7 @@ confir
 clear
 
 #          Timezone, Lang & Keyboard
-
+echo -e "\t\e[33m-------------------\e[0m"
 echo -e "\t\e[33mConfigurando Timezone y Locales\e[0m"
 
 $CHROOT ln -sf /usr/share/zoneinfo/America/Argentina/Buenos_Aires /etc/localtime
@@ -279,7 +283,7 @@ confir
 clear
 
 #          Hostname & Hosts
-
+echo -e "\t\e[33m-------------------\e[0m"
 echo -e "\t\e[33mConfigurando Internet\e[0m"
 
 echo "${HNAME}" >>/mnt/etc/hostname
@@ -293,7 +297,7 @@ confir
 clear
 
 #          Users & Passwords
-
+echo -e "\t\e[33m-------------------\e[0m"
 echo -e "\t\e[33mUsuario Y Passwords\e[0m"
 
 echo "root:$PASSWDR" | $CHROOT chpasswd
@@ -306,6 +310,7 @@ confir
 sleep 7
 clear
 
+echo -e "\t\e[33m-------------------\e[0m"
 echo -e "\t\e[33mInstalando GRUB\e[0m"
 
 if [ "$bootmode" == "uefi" ]; then
@@ -324,7 +329,7 @@ sleep 4
 clear
 
 #          Refreshing Mirrors
-
+echo -e "\t\e[33m-------------------\e[0m"
 echo -e "\t\e[33mRefrescando mirros en la nueva Instalacion\e[0m"
 
 reflector --verbose --latest 5 --country 'United States' --age 6 --sort rate --save /etc/pacman.d/mirrorlist >/dev/null 2>&1
@@ -336,6 +341,7 @@ clear
 echo ""
 
 #		Instalando gnome y servicios
+echo -e "\t\e[33m-------------------\e[0m"
 echo -e "\t\e[33mInstalando gnome y gdm\e[0m"
 # 		Instala GNOME, GDM y NetworkManager
 
@@ -345,22 +351,9 @@ confir
 sleep 3
 clear
 
-#		Instalando paru
-echo "cd && git clone https://aur.archlinux.org/paru.git && cd paru && makepkg -si --noconfirm && cd" | $CHROOT su "$USR"
 
-echo "cd && paru -S tdrop-git --skipreview --noconfirm --removemake" | $CHROOT su "$USR"
-echo "cd && paru -S gnome-tweaks --skipreview --noconfirm --removemake" | $CHROOT su "$USR"
-echo "cd && paru -S extension-manager --skipreview --noconfirm --removemake" | $CHROOT su "$USR"
-#echo "cd && paru -S eww-x11 simple-mtpfs tdrop-git --skipreview --noconfirm --removemake" | $CHROOT su "$USR"
-#echo "cd && paru -S zramswap stacer --skipreview --noconfirm --removemake" | $CHROOT su "$USR"
-#echo "cd && paru -S spotify spotify-adblock-git mpv-git popcorntime-bin --skipreview --noconfirm --removemake" | $CHROOT su "$USR"
-#echo "cd && paru -S whatsapp-nativefier telegram-desktop-bin simplescreenrecorder --skipreview --noconfirm --removemake" | $CHROOT su "$USR"
-#echo "cd && paru -S cmatrix-git transmission-gtk3 qogir-icon-theme --skipreview --noconfirm --removemake" | $CHROOT su "$USR"
-sleep 3
-confir
-echo ""
-clear
 # Activando servicio
+echo -e "\t\e[33m-------------------\e[0m"
 echo -e "\t\e[33mActivando Servicios\e[0m"
 
 $CHROOT systemctl enable NetworkManager.service
@@ -383,6 +376,25 @@ printf "%s00-keyboard.conf%s generated in --> /etc/X11/xorg.conf.d\n" "${CGR}" "
 confir
 clear
 
+#		Instalando paru
+echo -e "\t\e[33m-------------------\e[0m"
+echo -e "\t\e[33mClonando e instalando paru.\e[0m"
+sleep 3
+echo "cd && git clone https://aur.archlinux.org/paru.git && cd paru && makepkg -si --noconfirm && cd" | $CHROOT su "$USR"
+
+echo "cd && paru -S tdrop-git --skipreview --noconfirm --removemake" | $CHROOT su "$USR"
+echo "cd && paru -S gnome-tweaks --skipreview --noconfirm --removemake" | $CHROOT su "$USR"
+echo "cd && paru -S extension-manager --skipreview --noconfirm --removemake" | $CHROOT su "$USR"
+#echo "cd && paru -S eww-x11 simple-mtpfs tdrop-git --skipreview --noconfirm --removemake" | $CHROOT su "$USR"
+#echo "cd && paru -S zramswap stacer --skipreview --noconfirm --removemake" | $CHROOT su "$USR"
+#echo "cd && paru -S spotify spotify-adblock-git mpv-git popcorntime-bin --skipreview --noconfirm --removemake" | $CHROOT su "$USR"
+#echo "cd && paru -S whatsapp-nativefier telegram-desktop-bin simplescreenrecorder --skipreview --noconfirm --removemake" | $CHROOT su "$USR"
+#echo "cd && paru -S cmatrix-git transmission-gtk3 qogir-icon-theme --skipreview --noconfirm --removemake" | $CHROOT su "$USR"
+sleep 3
+confir
+echo ""
+clear
+
 #          Reversión de privilegios sin contraseña
 
 sed -i 's/%wheel ALL=(ALL:ALL) NOPASSWD: ALL/# %wheel ALL=(ALL:ALL) NOPASSWD: ALL/' /mnt/etc/sudoers
@@ -391,6 +403,7 @@ sleep 3
 confir
 clear
 
+echo -e "\t\e[33m-------------------\e[0m"
 echo -e "\t\e[33mLimpiando sistema para su primer arranque\e[0m"
 sleep 2
 rm -rf /mnt/home/"$USR"/.cache/paru/
@@ -402,13 +415,11 @@ confir
 clear
 # Confirmación de reinicio
 while true; do
-	read -rp " Quieres reiniciar ahora? [s/N]: " sn
-	case $sn in
-	[Ss]*)
+	sn=$(whiptail --yesno "¿Quieres reiniciar ahora?" 10 60 3>&1 1>&2 2>&3)
+	if [ $? -eq 0 ]; then
 		umount -R >/dev/null 2>&1
 		reboot
-		;;
-	[Nn]*) exit ;;
-	*) printf "Error: solo escribe 's' o 'n'\n\n" ;;
-	esac
+	else
+		exit
+	fi
 done
