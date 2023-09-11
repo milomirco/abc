@@ -32,8 +32,9 @@ echo ""
 clear
 
 
-echo -e "\t\e[33m-------------------\e[0m"
+
 # Actualizando archlinux  keyring
+echo -e "\t\e[33m-------------------\e[0m"
 echo -e "\t\e[33mActualizando archkeyring\e[0m"
 pacman -Sy archlinux-keyring --noconfirm
 
