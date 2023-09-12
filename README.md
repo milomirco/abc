@@ -4,7 +4,9 @@
 
 ## Instruciones
 curl https://raw.githubusercontent.com/milomirco/abc/main/1-a.sh -o $HOME/1-a.sh
+# .
 chmod +x 1-a.sh
+# .
 ./1-a.sh
 
 # ....
