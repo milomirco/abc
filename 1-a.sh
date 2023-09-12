@@ -494,15 +494,14 @@ echo -e "\t\e[33mClonando e instalando paru.\e[0m"
 echo -e "\t\e[33m-------------------\e[0m"
 sleep 3
 clear
-	if [ "${PARUH}" == "Si" ]; then
-
-		echo -e "\t\e[33m----------------\e[0m"
-		echo -e "\t\e[33mInstalando paru.\e[0m"
-		echo -e "\t\e[33m----------------\e[0m"
-			sleep 2
-				echo "cd && git clone https://aur.archlinux.org/paru.git && cd paru && makepkg -si --noconfirm && cd" | $CHROOT su "$USR"
-			clear
-	fi
+if [ "${PARUH}" == "Si" ]; then
+	echo -e "\t\e[33m----------------\e[0m"
+	echo -e "\t\e[33mInstalando paru.\e[0m"
+	echo -e "\t\e[33m----------------\e[0m"
+	sleep 2
+		echo "cd && git clone https://aur.archlinux.org/paru.git && cd paru && makepkg -si --noconfirm && cd" | $CHROOT su "$USR"
+	clear
+fi
 confir
 sleep 3
 #echo "cd && git clone https://aur.archlinux.org/paru.git && cd paru && makepkg -si --noconfirm && cd" | $CHROOT su "$USR"
