@@ -171,6 +171,13 @@ lsblk -d -e 7,11 -o NAME,SIZE,TYPE,MODEL
 echo "----"
 echo ""
 
+#          Creando y Montando particion raiz
+echo -e "\t\e[33m-------------------\e[0m"
+echo -e "\t\e[33mCreando Particiones\e[0m"
+echo -e "\t\e[33m-------------------\e[0m"
+
+cfdisk "${drive}"
+clear
 
 # Seleccionar el disco para la instalación de Arch Linux
 echo -e "\t\e[33m--------------------------------------\e[0m"
@@ -182,15 +189,6 @@ select drive in $(lsblk -d | awk '{print "/dev/" $1}' | grep 'sd\|hd\|vd\|nvme\|
 done
 sleep 3
 clear
-
-#          Creando y Montando particion raiz
-echo -e "\t\e[33m-------------------\e[0m"
-echo -e "\t\e[33mCreando Particiones\e[0m"
-echo -e "\t\e[33m-------------------\e[0m"
-
-cfdisk "${drive}"
-clear
-
 
 #		Sistema UEFI
 echo -e "\t\e[33m-------------------------------------------\e[0m"
