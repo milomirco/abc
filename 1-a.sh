@@ -79,20 +79,24 @@ sleep 2
 
 if [ -d /sys/firmware/efi/efivars ]; then
 	bootmode="uefi"
+	echo -e "\t\e[33m-----------------------------------\e[0m"
 	echo -e "\t\e[33mEl escript se ejecutara en modo EFI\e[0m"
+	echo -e "\t\e[33m-----------------------------------\e[0m"
 	sleep 2
 	clear
 else
 	bootmode="mbrbios"
+	echo -e "\t\e[33m----------------------------------------\e[0m"
 	echo -e "\t\e[33mEl escript se ejecutara en modo BIOS/MBR\e[0m"
+	echo -e "\t\e[33m----------------------------------------\e[0m"
 	sleep 2
 	clear
 fi
 
 #          Obteniendo información usuario, root, Hostname
-echo -e "\t\e[33m-------------------\e[0m"
+echo -e "\t\e[33m--------------------------------\e[0m"
 echo -e "\t\e[33mObteniendo información necesaria\e[0m"
-echo -e "\t\e[33m-------------------\e[0m"
+echo -e "\t\e[33m--------------------------------\e[0m"
 
 while true; do
 	USR=$(whiptail --inputbox "Ingresa tu usuario:" 10 50 3>&1 1>&2 2>&3)
@@ -137,10 +141,20 @@ while true; do
 done
 
 clear
-
+PS3="Quieres instalar PARU como AUR Helper?: "
+	select PARUH in "Si" "No"
+		do
+			if [ $PARUH ]; then
+				break
+			fi
+		done
+confir
+sleep 3
+clear
 #          Seleccionar DISCO
-
-echo -e "\t\e[33mSelecciona el disco para la instalacion\e[0m"
+echo -e "\t\e[33m---------------------------------------\e[0m"
+echo -e "\t\e[33mSelecciona el disco para la instalación\e[0m"
+echo -e "\t\e[33m---------------------------------------\e[0m"
 
 # Mostrar información de los discos disponibles
 echo -e "\t\e[33m-------------------\e[0m"
@@ -152,8 +166,8 @@ echo "----"
 echo ""
 
 # Seleccionar el disco para la instalación de Arch Linux
-echo -e "\t\e[33m-------------------\e[0m"
-PS3="Escoge la particion donde Arch Linux se instalara: "
+echo -e "\t\e[33m--------------------------------------\e[0m"
+PS3="Escoge la partición donde Arch Linux se instalara: "
 select drive in $(lsblk -d | awk '{print "/dev/" $1}' | grep 'sd\|hd\|vd\|nvme\|mmcblk'); do
 	if [ "$drive" ]; then
 		break
@@ -169,25 +183,101 @@ echo -e "\t\e[33m-------------------\e[0m"
 cfdisk "${drive}"
 clear
 
-echo -e "\t\e[33mFormatenado y Montando Particiones\e[0m"
 
-lsblk "${drive}" -I 8 -o NAME,SIZE,FSTYPE,PARTTYPENAME
-echo ""
-echo -e "\t\e[33m-------------------\e[0m"
-PS3="Escoge la particion raiz que acabas de crear donde Arch Linux se instalara: "
-select partroot in $(fdisk -l "${drive}" | grep Linux | cut -d" " -f1); do
-	if [ "$partroot" ]; then
-		printf " \n Formateando la particion RAIZ %s\n Espere..\n" "${partroot}"
-		sleep 2
-		mkfs.ext4 -L Arch "${partroot}" >/dev/null 2>&1
-		mount "${partroot}" /mnt
-		sleep 2
-		break
+#		Sistema UEFI
+echo -e "\t\e[33m-------------------------------------------\e[0m"
+echo -e "\t\e[33mCreando, Formateando y Montando Particiones\e[0m"
+echo -e "\t\e[33m-------------------------------------------\e[0m"
+
+	if [ "$bootmode" == "uefi" ]; then
+	
+		cfdisk "${drive}"
+		sleep 3
+		partx -u "${drive}"
+		clear
+
+echo -e "\t\e[33m---------------------------\e[0m"
+echo -e "\t\e[33mSelecciona tu particion EFI\e[0m"
+echo -e "\t\e[33m---------------------------\e[0m"
+
+		lsblk "${drive}" -I 8 -o NAME,SIZE,PARTTYPENAME
+		echo
+			
+PS3="Escoge la particion EFI que acabas de crear: "
+	select efipart in $(fdisk -l "${drive}" | grep EFI | cut -d" " -f1) 
+		do
+			if [ "$efipart" ]; then	
+			
+				break
+			fi 
+			clear
+		done
+		
+		else
+			cfdisk "${drive}"
+			clear
 	fi
-done
+
+echo -e "\t\e[33m-------------------------------------------\e[0m"
+echo -e "\t\e[33mCreando, Formatenado y Montando Particiones\e[0m"
+echo -e "\t\e[33m-------------------------------------------\e[0m"
+
+			echo
+			lsblk "${drive}" -I 8 -o NAME,SIZE,FSTYPE,PARTTYPENAME
+			echo
+
+#		Sistema BIOS			
+PS3="Escoge la particion raiz que acabas de crear donde Arch Linux se instalara: "
+	select partroot in $(fdisk -l "${drive}" | grep Linux | cut -d" " -f1) 
+		do
+			if [ "$partroot" ]; then
+				printf " \nFormateando la particion RAIZ %s\n Espere..\n" "${partroot}"
+				sleep 3
+				mkfs.ext4 -L Arch "${partroot}" >/dev/null 2>&1
+				mount "${partroot}" /mnt
+				sleep 3	
+				break
+			fi
+		done
+					
+			
+	if [ "$bootmode" == "uefi" ]; then
+	
+			printf "\n Formateando y montando la particion EFI\n Espere..\n"
+			sleep 3
+			mkdir -p /mnt/efi
+			mkfs.fat -F 32 "${efipart}" >/dev/null 2>&1
+			mount "${efipart}" /mnt/efi
+			sleep 3
+	fi
+			confir
+			clear
+
+echo -e "\t\e[33m-------------------\e[0m"		
 echo -e "\t\e[33m-------------------\e[0m"
 confir
 clear
+
+#		Sistema BIOS
+#echo -e "\t\e[33m-------------------\e[0m"
+#echo -e "\t\e[33mFormatenado y Montando Particiones\e[0m"
+#echo -e "\t\e[33m-------------------\e[0m"
+
+#lsblk "${drive}" -I 8 -o NAME,SIZE,FSTYPE,PARTTYPENAME
+#echo ""
+#echo -e "\t\e[33m-------------------\e[0m"
+#PS3="Escoge la particion raiz que acabas de crear donde Arch Linux se instalara: "
+#select partroot in $(fdisk -l "${drive}" | grep Linux | cut -d" " -f1); do
+#	if [ "$partroot" ]; then
+#		printf " \n Formateando la particion RAIZ %s\n Espere..\n" "${partroot}"
+#		sleep 2
+#		mkfs.ext4 -L Arch "${partroot}" >/dev/null 2>&1
+#		mount "${partroot}" /mnt
+#		sleep 2
+#		break
+#	fi
+#done
+
 
 #          Creando y Montando SWAP
 echo -e "\t\e[33m-------------------\e[0m"
@@ -239,6 +329,12 @@ elif [ "$swappart" = "No quiero swap" ]; then
 	printf " Swap:      %sNo%s\n" "${CRE}" "${CNC}"
 elif [ "$swappart" ]; then
 	printf " Swap:      %sSi%s en %s[%s%s%s%s%s]%s\n" "${CGR}" "${CNC}" "${CYE}" "${CNC}" "${CBL}" "${swappart}" "${CNC}" "${CYE}" "${CNC}"
+fi
+
+if [ "${PARUH}" = "Si" ]; then
+	printf " Paru:       %sSi%s\n" "${CGR}" "${CNC}"
+else
+	printf " Paru:       %sNo%s\n" "${CRE}" "${CNC}"
 fi
 
 echo
@@ -335,6 +431,7 @@ else
 	$CHROOT grub-install --target=i386-pc "$drive"
 fi
 
+sed -i 's/quiet/zswap.enabled=0 mitigations=off nowatchdog/; s/#GRUB_DISABLE_OS_PROBER/GRUB_DISABLE_OS_PROBER/' /mnt/etc/default/grub
 echo
 $CHROOT grub-mkconfig -o /boot/grub/grub.cfg
 confir
@@ -396,8 +493,24 @@ echo -e "\t\e[33m-------------------\e[0m"
 echo -e "\t\e[33mClonando e instalando paru.\e[0m"
 echo -e "\t\e[33m-------------------\e[0m"
 sleep 3
-echo "cd && git clone https://aur.archlinux.org/paru.git && cd paru && makepkg -si --noconfirm && cd" | $CHROOT su "$USR"
+clear
+	if [ "${PARUH}" == "Si" ]; then
 
+		echo -e "\t\e[33m----------------\e[0m"
+		echo -e "\t\e[33mInstalando paru.\e[0m"
+		echo -e "\t\e[33m----------------\e[0m"
+			sleep 2
+				echo "cd && git clone https://aur.archlinux.org/paru.git && cd paru && makepkg -si --noconfirm && cd" | $CHROOT su "$USR"
+			clear
+	fi
+confir
+sleep 3
+#echo "cd && git clone https://aur.archlinux.org/paru.git && cd paru && makepkg -si --noconfirm && cd" | $CHROOT su "$USR"
+echo -e "\t\e[33m-------------------------------------------------------------------------\e[0m"
+echo -e "\t\e[33mInstalando tdrop-git, gnome-tweaks, extension-manager, papirus-icon-theme\e[0m"
+echo -e "\t\e[33m-------------------------------------------------------------------------\e[0m"
+confir
+clear
 echo "cd && paru -S tdrop-git --skipreview --noconfirm --removemake" | $CHROOT su "$USR"
 echo "cd && paru -S gnome-tweaks --skipreview --noconfirm --removemake" | $CHROOT su "$USR"
 echo "cd && paru -S extension-manager --skipreview --noconfirm --removemake" | $CHROOT su "$USR"
