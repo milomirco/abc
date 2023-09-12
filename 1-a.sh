@@ -2,12 +2,16 @@
 
 clear
 loadkeys la-latin1
-
+echo -e "\t\e[31mTeclado latam.\e[0m"
+sleep 3
+clear
 #          Verificación de conexión a la red
-echo -e "\t\e[33m-------------------\e[0m"
-echo -e "\t\e[33m-------------------\e[0m"
+echo -e "\t\e[33m-------------------------------\e[0m"
+echo -e "\t\e[33m-------------------------------\e[0m"
 echo -e "\t\e[31mVerificando conección a la red.\e[0m"
-echo -e "\t\e[33m-------------------\e[0m"
+echo -e "\t\e[33m-------------------------------\e[0m"
+sleep 2
+clear
 network() {
 	testping=$(ping -q -c 1 -W 1 archlinux.org >/dev/null)
 
@@ -21,6 +25,7 @@ network() {
 	pingx=$(ping -c 1 archlinux.org | head -n2)
 	echo -e "\e[90m$pingx\e[0m"
 	echo ""
+	sleep 3
 }
 
 echo -e "\t\e[33mEstado de conexión...\e[0m"
@@ -32,12 +37,13 @@ else
 fi
 
 echo ""
+sleep 3
 clear
 
 # Actualizando archlinux  keyring
-echo -e "\t\e[33m-------------------\e[0m"
-echo -e "\t\e[33mActualizando archkeyring\e[0m"
-echo -e "\t\e[33m-------------------\e[0m"
+echo -e "\t\e[33m------------------------------\e[0m"
+echo -e "\t\e[33mActualizando archlinux-keyring\e[0m"
+echo -e "\t\e[33m------------------------------\e[0m"
 pacman -Sy archlinux-keyring --noconfirm
 
 confir
@@ -281,7 +287,7 @@ clear
 
 #          Creando y Montando SWAP
 echo -e "\t\e[33m-------------------\e[0m"
-echo -e "\t\e[33mConfigurando SWAP\e[0m"
+echo -e "\t\e[33m-Configurando SWAP-\e[0m"
 echo -e "\t\e[33m-------------------\e[0m"
 PS3="Escoge la particion SWAP: "
 select swappart in $(fdisk -l | grep -E "swap" | cut -d" " -f1) "No quiero swap" "Crear archivo swap"; do
@@ -318,7 +324,7 @@ done
 clear
 
 #          Información
-echo -e "\t\e[33m-------------------\e[0m"
+echo -e "\t\e[33m---------INFO----------\e[0m"
 printf "\n\n%s\n\n" "--------------------"
 printf " User:      %s%s%s\n" "${CBL}" "$USR" "${CNC}"
 printf " Hostname:  %s%s%s\n" "${CBL}" "$HNAME" "${CNC}"
@@ -338,7 +344,7 @@ else
 fi
 
 echo
-echo -e "\t\e[33m-------------------\e[0m"
+echo -e "\t\e[33m--------------------------------------------------------------\e[0m"
 printf "\n Arch Linux se instalara en el disco %s[%s%s%s%s%s]%s en la particion %s[%s%s%s%s%s]%s\n\n\n" "${CYE}" "${CNC}" "${CRE}" "${drive}" "${CNC}" "${CYE}" "${CNC}" "${CYE}" "${CNC}" "${CBL}" "${partroot}" "${CNC}" "${CYE}" "${CNC}"
 
 while true; do
@@ -351,9 +357,9 @@ while true; do
 done
 
 #          Pacstrap base system
-echo -e "\t\e[33m-------------------\e[0m"
+echo -e "\t\e[33m-----------------------\e[0m"
 echo -e "\t\e[33mInstalando sistema base\e[0m"
-echo -e "\t\e[33m-------------------\e[0m"
+echo -e "\t\e[33m-----------------------\e[0m"
 pacstrap /mnt base base-devel linux linux-firmware networkmanager xdg-user-dirs nano git
 
 sleep 3
@@ -362,7 +368,7 @@ clear
 
 #          Generating FSTAB
 echo -e "\t\e[33m-------------------\e[0m"
-echo -e "\t\e[33mGenerando FSTAB\e[0m"
+echo -e "\t\e[33m--Generando FSTAB--\e[0m"
 echo -e "\t\e[33m-------------------\e[0m"
 
 genfstab -U /mnt >>/mnt/etc/fstab
@@ -372,9 +378,9 @@ confir
 clear
 
 #          Timezone, Lang & Keyboard
-echo -e "\t\e[33m-------------------\e[0m"
+echo -e "\t\e[33m-------------------------------\e[0m"
 echo -e "\t\e[33mConfigurando Timezone y Locales\e[0m"
-echo -e "\t\e[33m-------------------\e[0m"
+echo -e "\t\e[33m-------------------------------\e[0m"
 
 $CHROOT ln -sf /usr/share/zoneinfo/America/Argentina/Buenos_Aires /etc/localtime
 $CHROOT hwclock --systohc
@@ -389,9 +395,9 @@ confir
 clear
 
 #          Hostname & Hosts
-echo -e "\t\e[33m-------------------\e[0m"
+echo -e "\t\e[33m---------------------\e[0m"
 echo -e "\t\e[33mConfigurando Internet\e[0m"
-echo -e "\t\e[33m-------------------\e[0m"
+echo -e "\t\e[33m---------------------\e[0m"
 
 echo "${HNAME}" >>/mnt/etc/hostname
 cat >>/mnt/etc/hosts <<-EOL
@@ -419,7 +425,7 @@ sleep 7
 clear
 
 echo -e "\t\e[33m-------------------\e[0m"
-echo -e "\t\e[33mInstalando GRUB\e[0m"
+echo -e "\t\e[33m--Instalando GRUB--\e[0m"
 echo -e "\t\e[33m-------------------\e[0m"
 
 if [ "$bootmode" == "uefi" ]; then
@@ -439,9 +445,9 @@ sleep 4
 clear
 
 #          Refreshing Mirrors
-echo -e "\t\e[33m-------------------\e[0m"
+echo -e "\t\e[33m------------------------------------------\e[0m"
 echo -e "\t\e[33mRefrescando mirros en la nueva Instalacion\e[0m"
-echo -e "\t\e[33m-------------------\e[0m"
+echo -e "\t\e[33m------------------------------------------\e[0m"
 
 reflector --verbose --latest 5 --country 'United States' --age 6 --sort rate --save /etc/pacman.d/mirrorlist >/dev/null 2>&1
 pacman -Syy
@@ -452,9 +458,9 @@ clear
 echo ""
 
 #		Instalando gnome y servicios
-echo -e "\t\e[33m-------------------\e[0m"
+echo -e "\t\e[33m----------------------\e[0m"
 echo -e "\t\e[33mInstalando gnome y gdm\e[0m"
-echo -e "\t\e[33m-------------------\e[0m"
+echo -e "\t\e[33m----------------------\e[0m"
 # 		Instala GNOME, GDM y NetworkManager
 
 $CHROOT pacman -S gnome gdm pipewire pipewire-pulse firewalld firefox git nano neovim gum tmux jq lha lrzip lzip p7zip lbzip2 arj lzop cpio unrar unzip zip unarj xdg-utils --noconfirm
@@ -489,9 +495,9 @@ confir
 clear
 
 #		Instalando paru
-echo -e "\t\e[33m-------------------\e[0m"
+echo -e "\t\e[33m---------------------------\e[0m"
 echo -e "\t\e[33mClonando e instalando paru.\e[0m"
-echo -e "\t\e[33m-------------------\e[0m"
+echo -e "\t\e[33m---------------------------\e[0m"
 sleep 3
 clear
 if [ "${PARUH}" == "Si" ]; then
@@ -521,9 +527,9 @@ echo "cd && paru -S papirus-icon-theme --skipreview --noconfirm --removemake" | 
 #echo "cd && paru -S cmatrix-git transmission-gtk3 qogir-icon-theme --skipreview --noconfirm --removemake" | $CHROOT su "$USR"
 
 #   instalando core-gtk-theme
-echo -e "\t\e[33m-------------------\e[0m"
+echo -e "\t\e[33m----------------------------------------\e[0m"
 echo -e "\t\e[33mDescargando e instalando core-gtk-theme.\e[0m"
-echo -e "\t\e[33m-------------------\e[0m"
+echo -e "\t\e[33m----------------------------------------\e[0m"
 sleep 3
 echo "cd && git clone https://github.com/ArchItalia/core-gtk-theme.git && cd core-gtk-theme && makepkg -si --noconfirm && cd" | $CHROOT su "$USR"
 
@@ -540,9 +546,9 @@ sleep 3
 confir
 clear
 
-echo -e "\t\e[33m-------------------\e[0m"
+echo -e "\t\e[33m-----------------------------------------\e[0m"
 echo -e "\t\e[33mLimpiando sistema para su primer arranque\e[0m"
-echo -e "\t\e[33m-------------------\e[0m"
+echo -e "\t\e[33m-----------------------------------------\e[0m"
 sleep 2
 rm -rf /mnt/home/"$USR"/.cache/paru/
 rm -rf /mnt/home/"$USR"/.cache/electron/
