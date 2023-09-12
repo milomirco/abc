@@ -171,6 +171,7 @@ lsblk -d -e 7,11 -o NAME,SIZE,TYPE,MODEL
 echo "----"
 echo ""
 
+
 # Seleccionar el disco para la instalación de Arch Linux
 echo -e "\t\e[33m--------------------------------------\e[0m"
 PS3="Escoge la partición donde Arch Linux se instalara: "
@@ -179,6 +180,7 @@ select drive in $(lsblk -d | awk '{print "/dev/" $1}' | grep 'sd\|hd\|vd\|nvme\|
 		break
 	fi
 done
+sleep 3
 clear
 
 #          Creando y Montando particion raiz
