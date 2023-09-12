@@ -4,7 +4,10 @@ clear
 loadkeys la-latin1
 
 #          Verificación de conexión a la red
-
+echo -e "\t\e[33m-------------------\e[0m"
+echo -e "\t\e[33m-------------------\e[0m"
+echo -e "\t\e[31mVerificando conección a la red.\e[0m"
+echo -e "\t\e[33m-------------------\e[0m"
 network() {
 	testping=$(ping -q -c 1 -W 1 archlinux.org >/dev/null)
 
@@ -34,6 +37,7 @@ clear
 # Actualizando archlinux  keyring
 echo -e "\t\e[33m-------------------\e[0m"
 echo -e "\t\e[33mActualizando archkeyring\e[0m"
+echo -e "\t\e[33m-------------------\e[0m"
 pacman -Sy archlinux-keyring --noconfirm
 
 confir
@@ -69,6 +73,7 @@ confir
 echo ""
 echo -e "\t\e[33m-------------------\e[0m"
 echo -e "\t\e[33mModo de Arranque\e[0m"
+echo -e "\t\e[33m-------------------\e[0m"
 echo ""
 sleep 2
 
@@ -87,6 +92,7 @@ fi
 #          Obteniendo información usuario, root, Hostname
 echo -e "\t\e[33m-------------------\e[0m"
 echo -e "\t\e[33mObteniendo información necesaria\e[0m"
+echo -e "\t\e[33m-------------------\e[0m"
 
 while true; do
 	USR=$(whiptail --inputbox "Ingresa tu usuario:" 10 50 3>&1 1>&2 2>&3)
@@ -139,6 +145,7 @@ echo -e "\t\e[33mSelecciona el disco para la instalacion\e[0m"
 # Mostrar información de los discos disponibles
 echo -e "\t\e[33m-------------------\e[0m"
 echo -e "\t\e[33mDiscos disponibles:\e[0m"
+echo -e "\t\e[33m-------------------\e[0m"
 echo ""
 lsblk -d -e 7,11 -o NAME,SIZE,TYPE,MODEL
 echo "----"
@@ -157,6 +164,7 @@ clear
 #          Creando y Montando particion raiz
 echo -e "\t\e[33m-------------------\e[0m"
 echo -e "\t\e[33mCreando Particiones\e[0m"
+echo -e "\t\e[33m-------------------\e[0m"
 
 cfdisk "${drive}"
 clear
@@ -249,6 +257,7 @@ done
 #          Pacstrap base system
 echo -e "\t\e[33m-------------------\e[0m"
 echo -e "\t\e[33mInstalando sistema base\e[0m"
+echo -e "\t\e[33m-------------------\e[0m"
 pacstrap /mnt base base-devel linux linux-firmware networkmanager xdg-user-dirs nano git
 
 sleep 3
@@ -258,6 +267,7 @@ clear
 #          Generating FSTAB
 echo -e "\t\e[33m-------------------\e[0m"
 echo -e "\t\e[33mGenerando FSTAB\e[0m"
+echo -e "\t\e[33m-------------------\e[0m"
 
 genfstab -U /mnt >>/mnt/etc/fstab
 
@@ -268,6 +278,7 @@ clear
 #          Timezone, Lang & Keyboard
 echo -e "\t\e[33m-------------------\e[0m"
 echo -e "\t\e[33mConfigurando Timezone y Locales\e[0m"
+echo -e "\t\e[33m-------------------\e[0m"
 
 $CHROOT ln -sf /usr/share/zoneinfo/America/Argentina/Buenos_Aires /etc/localtime
 $CHROOT hwclock --systohc
@@ -284,6 +295,7 @@ clear
 #          Hostname & Hosts
 echo -e "\t\e[33m-------------------\e[0m"
 echo -e "\t\e[33mConfigurando Internet\e[0m"
+echo -e "\t\e[33m-------------------\e[0m"
 
 echo "${HNAME}" >>/mnt/etc/hostname
 cat >>/mnt/etc/hosts <<-EOL
@@ -298,6 +310,7 @@ clear
 #          Users & Passwords
 echo -e "\t\e[33m-------------------\e[0m"
 echo -e "\t\e[33mUsuario Y Passwords\e[0m"
+echo -e "\t\e[33m-------------------\e[0m"
 
 echo "root:$PASSWDR" | $CHROOT chpasswd
 $CHROOT useradd -m -g users -G wheel "${USR}"
@@ -311,6 +324,7 @@ clear
 
 echo -e "\t\e[33m-------------------\e[0m"
 echo -e "\t\e[33mInstalando GRUB\e[0m"
+echo -e "\t\e[33m-------------------\e[0m"
 
 if [ "$bootmode" == "uefi" ]; then
 
@@ -330,6 +344,7 @@ clear
 #          Refreshing Mirrors
 echo -e "\t\e[33m-------------------\e[0m"
 echo -e "\t\e[33mRefrescando mirros en la nueva Instalacion\e[0m"
+echo -e "\t\e[33m-------------------\e[0m"
 
 reflector --verbose --latest 5 --country 'United States' --age 6 --sort rate --save /etc/pacman.d/mirrorlist >/dev/null 2>&1
 pacman -Syy
@@ -342,6 +357,7 @@ echo ""
 #		Instalando gnome y servicios
 echo -e "\t\e[33m-------------------\e[0m"
 echo -e "\t\e[33mInstalando gnome y gdm\e[0m"
+echo -e "\t\e[33m-------------------\e[0m"
 # 		Instala GNOME, GDM y NetworkManager
 
 $CHROOT pacman -S gnome gdm pipewire pipewire-pulse firefox git nano neovim gimp gum tmux jq lha lrzip lzip p7zip lbzip2 arj lzop cpio unrar unzip zip unarj xdg-utils --noconfirm
@@ -353,6 +369,7 @@ clear
 # Activando servicio
 echo -e "\t\e[33m-------------------\e[0m"
 echo -e "\t\e[33mActivando Servicios\e[0m"
+echo -e "\t\e[33m-------------------\e[0m"
 
 $CHROOT systemctl enable NetworkManager.service
 $CHROOT systemctl enable gdm.service
@@ -377,6 +394,7 @@ clear
 #		Instalando paru
 echo -e "\t\e[33m-------------------\e[0m"
 echo -e "\t\e[33mClonando e instalando paru.\e[0m"
+echo -e "\t\e[33m-------------------\e[0m"
 sleep 3
 echo "cd && git clone https://aur.archlinux.org/paru.git && cd paru && makepkg -si --noconfirm && cd" | $CHROOT su "$USR"
 
@@ -393,6 +411,7 @@ echo "cd && paru -S papirus-icon-theme --skipreview --noconfirm --removemake" | 
 #   instalando core-gtk-theme
 echo -e "\t\e[33m-------------------\e[0m"
 echo -e "\t\e[33mDescargando e instalando core-gtk-theme.\e[0m"
+echo -e "\t\e[33m-------------------\e[0m"
 sleep 3
 echo "cd && git clone https://github.com/ArchItalia/core-gtk-theme.git && cd core-gtk-theme && makepkg -si --noconfirm && cd" | $CHROOT su "$USR"
 
@@ -411,6 +430,7 @@ clear
 
 echo -e "\t\e[33m-------------------\e[0m"
 echo -e "\t\e[33mLimpiando sistema para su primer arranque\e[0m"
+echo -e "\t\e[33m-------------------\e[0m"
 sleep 2
 rm -rf /mnt/home/"$USR"/.cache/paru/
 rm -rf /mnt/home/"$USR"/.cache/electron/
