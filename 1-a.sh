@@ -360,7 +360,7 @@ echo -e "\t\e[33mInstalando gnome y gdm\e[0m"
 echo -e "\t\e[33m-------------------\e[0m"
 # 		Instala GNOME, GDM y NetworkManager
 
-$CHROOT pacman -S gnome gdm pipewire pipewire-pulse firefox git nano neovim gimp gum tmux jq lha lrzip lzip p7zip lbzip2 arj lzop cpio unrar unzip zip unarj xdg-utils --noconfirm
+$CHROOT pacman -S gnome gdm pipewire pipewire-pulse firewalld firefox git nano neovim gum tmux jq lha lrzip lzip p7zip lbzip2 arj lzop cpio unrar unzip zip unarj xdg-utils --noconfirm
 echo ""
 confir
 sleep 3
