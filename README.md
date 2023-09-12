@@ -13,11 +13,11 @@ curl https://raw.githubusercontent.com/milomirco/abc/main/1-a.sh -o $HOME/1-a.sh
 ```
 - **Ahora dale permisos de ejecución.**
 ```sh
-chmod +x RiceInstaller
+chmod +x 1-a.sh
 ```
 - **Ejecute el instalador.**
 ```sh
-./RiceInstaller
+./1-a.sh
 ```
 
 ## Créditos
