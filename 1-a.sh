@@ -31,8 +31,6 @@ fi
 echo ""
 clear
 
-
-
 # Actualizando archlinux  keyring
 echo -e "\t\e[33m-------------------\e[0m"
 echo -e "\t\e[33mActualizando archkeyring\e[0m"
@@ -352,7 +350,6 @@ confir
 sleep 3
 clear
 
-
 # Activando servicio
 echo -e "\t\e[33m-------------------\e[0m"
 echo -e "\t\e[33mActivando Servicios\e[0m"
@@ -386,11 +383,19 @@ echo "cd && git clone https://aur.archlinux.org/paru.git && cd paru && makepkg -
 echo "cd && paru -S tdrop-git --skipreview --noconfirm --removemake" | $CHROOT su "$USR"
 echo "cd && paru -S gnome-tweaks --skipreview --noconfirm --removemake" | $CHROOT su "$USR"
 echo "cd && paru -S extension-manager --skipreview --noconfirm --removemake" | $CHROOT su "$USR"
+echo "cd && paru -S papirus-icon-theme --skipreview --noconfirm --removemake" | $CHROOT su "$USR"
 #echo "cd && paru -S eww-x11 simple-mtpfs tdrop-git --skipreview --noconfirm --removemake" | $CHROOT su "$USR"
 #echo "cd && paru -S zramswap stacer --skipreview --noconfirm --removemake" | $CHROOT su "$USR"
 #echo "cd && paru -S spotify spotify-adblock-git mpv-git popcorntime-bin --skipreview --noconfirm --removemake" | $CHROOT su "$USR"
 #echo "cd && paru -S whatsapp-nativefier telegram-desktop-bin simplescreenrecorder --skipreview --noconfirm --removemake" | $CHROOT su "$USR"
 #echo "cd && paru -S cmatrix-git transmission-gtk3 qogir-icon-theme --skipreview --noconfirm --removemake" | $CHROOT su "$USR"
+
+#   instalando core-gtk-theme
+echo -e "\t\e[33m-------------------\e[0m"
+echo -e "\t\e[33mDescargando e instalando core-gtk-theme.\e[0m"
+sleep 3
+echo "cd && git clone https://github.com/ArchItalia/core-gtk-theme.git && cd core-gtk-theme && makepkg -si --noconfirm && cd" | $CHROOT su "$USR"
+
 sleep 3
 confir
 echo ""
