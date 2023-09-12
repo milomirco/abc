@@ -1,8 +1,7 @@
 # abc
-# Este script bash es para instalación de Arch Linux.
-# Antes de proceder a su ejecución leer el script
+Este script bash es para instalación de **Arch** Linux.
+**Antes de proceder a su ejecución leer el script**
 
-## 📦 setup
 
 ### 💾 Instalación:
 Solo **ARCH** Linux.
