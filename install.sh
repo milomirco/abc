@@ -2,7 +2,10 @@
 
 clear
 loadkeys la-latin1
+echo -e "\t\e[33m--------------\e[0m"
+echo -e "\t\e[33m--------------\e[0m"
 echo -e "\t\e[33mTeclado latam.\e[0m"
+echo -e "\t\e[33m--------------\e[0m"
 sleep 3
 clear
 #          Verificación de conexión a la red
