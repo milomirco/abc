@@ -2,13 +2,13 @@
 
 clear
 loadkeys la-latin1
-echo -e "\t\e[31mTeclado latam.\e[0m"
+echo -e "\t\e[33mTeclado latam.\e[0m"
 sleep 3
 clear
 #          Verificación de conexión a la red
 echo -e "\t\e[33m-------------------------------\e[0m"
 echo -e "\t\e[33m-------------------------------\e[0m"
-echo -e "\t\e[31mVerificando conección a la red.\e[0m"
+echo -e "\t\e[33mVerificando conección a la red.\e[0m"
 echo -e "\t\e[33m-------------------------------\e[0m"
 sleep 2
 clear
@@ -81,21 +81,21 @@ echo -e "\t\e[33m-------------------\e[0m"
 echo -e "\t\e[33mModo de Arranque\e[0m"
 echo -e "\t\e[33m-------------------\e[0m"
 echo ""
-sleep 2
+sleep 3
 
 if [ -d /sys/firmware/efi/efivars ]; then
 	bootmode="uefi"
 	echo -e "\t\e[33m-----------------------------------\e[0m"
 	echo -e "\t\e[33mEl escript se ejecutara en modo EFI\e[0m"
 	echo -e "\t\e[33m-----------------------------------\e[0m"
-	sleep 2
+	sleep 3
 	clear
 else
 	bootmode="mbrbios"
 	echo -e "\t\e[33m----------------------------------------\e[0m"
 	echo -e "\t\e[33mEl escript se ejecutara en modo BIOS/MBR\e[0m"
 	echo -e "\t\e[33m----------------------------------------\e[0m"
-	sleep 2
+	sleep 3
 	clear
 fi
 
@@ -103,7 +103,7 @@ fi
 echo -e "\t\e[33m--------------------------------\e[0m"
 echo -e "\t\e[33mObteniendo información necesaria\e[0m"
 echo -e "\t\e[33m--------------------------------\e[0m"
-
+sleep 3
 while true; do
 	USR=$(whiptail --inputbox "Ingresa tu usuario:" 10 50 3>&1 1>&2 2>&3)
 	if [[ "${USR}" =~ ^[a-z][_a-z0-9-]{0,30}$ ]]; then
@@ -171,14 +171,6 @@ lsblk -d -e 7,11 -o NAME,SIZE,TYPE,MODEL
 echo "----"
 echo ""
 
-#          Creando y Montando particion raiz
-echo -e "\t\e[33m-------------------\e[0m"
-echo -e "\t\e[33mCreando Particiones\e[0m"
-echo -e "\t\e[33m-------------------\e[0m"
-
-cfdisk "${drive}"
-clear
-
 # Seleccionar el disco para la instalación de Arch Linux
 echo -e "\t\e[33m--------------------------------------\e[0m"
 PS3="Escoge la partición donde Arch Linux se instalara: "
@@ -188,6 +180,14 @@ select drive in $(lsblk -d | awk '{print "/dev/" $1}' | grep 'sd\|hd\|vd\|nvme\|
 	fi
 done
 sleep 3
+clear
+
+#          Creando particion
+echo -e "\t\e[33m-------------------\e[0m"
+echo -e "\t\e[33mCreando Particiones\e[0m"
+echo -e "\t\e[33m-------------------\e[0m"
+
+cfdisk "${drive}"
 clear
 
 #		Sistema UEFI
@@ -259,31 +259,12 @@ PS3="Escoge la particion raiz que acabas de crear donde Arch Linux se instalara:
 			confir
 			clear
 
-echo -e "\t\e[33m-------------------\e[0m"		
 echo -e "\t\e[33m-------------------\e[0m"
+echo -e "\t\e[33m-----Procesando----\e[0m"		
+echo -e "\t\e[33m-------------------\e[0m"
+sleep 2
 confir
 clear
-
-#		Sistema BIOS
-#echo -e "\t\e[33m-------------------\e[0m"
-#echo -e "\t\e[33mFormatenado y Montando Particiones\e[0m"
-#echo -e "\t\e[33m-------------------\e[0m"
-
-#lsblk "${drive}" -I 8 -o NAME,SIZE,FSTYPE,PARTTYPENAME
-#echo ""
-#echo -e "\t\e[33m-------------------\e[0m"
-#PS3="Escoge la particion raiz que acabas de crear donde Arch Linux se instalara: "
-#select partroot in $(fdisk -l "${drive}" | grep Linux | cut -d" " -f1); do
-#	if [ "$partroot" ]; then
-#		printf " \n Formateando la particion RAIZ %s\n Espere..\n" "${partroot}"
-#		sleep 2
-#		mkfs.ext4 -L Arch "${partroot}" >/dev/null 2>&1
-#		mount "${partroot}" /mnt
-#		sleep 2
-#		break
-#	fi
-#done
-
 
 #          Creando y Montando SWAP
 echo -e "\t\e[33m-------------------\e[0m"
@@ -346,6 +327,8 @@ fi
 echo
 echo -e "\t\e[33m--------------------------------------------------------------\e[0m"
 printf "\n Arch Linux se instalara en el disco %s[%s%s%s%s%s]%s en la particion %s[%s%s%s%s%s]%s\n\n\n" "${CYE}" "${CNC}" "${CRE}" "${drive}" "${CNC}" "${CYE}" "${CNC}" "${CYE}" "${CNC}" "${CBL}" "${partroot}" "${CNC}" "${CYE}" "${CNC}"
+echo -e "\t\e[33m--------------------------------------------------------------\e[0m"
+sleep 2
 
 while true; do
 	read -rp " ¿Deseas continuar? [s/N]: " sn
@@ -463,7 +446,7 @@ echo -e "\t\e[33mInstalando gnome y gdm\e[0m"
 echo -e "\t\e[33m----------------------\e[0m"
 # 		Instala GNOME, GDM y NetworkManager
 
-$CHROOT pacman -S gnome gdm pipewire pipewire-pulse firewalld firefox git nano neovim gum tmux jq lha lrzip lzip p7zip lbzip2 arj lzop cpio unrar unzip zip unarj xdg-utils --noconfirm
+$CHROOT pacman -S gnome gdm pipewire pipewire-pulse firewalld firefox git nano neofetch gparted neovim gum tmux jq unzip zip unarj xdg-utils --noconfirm
 echo ""
 confir
 sleep 3
@@ -525,6 +508,9 @@ echo "cd && paru -S papirus-icon-theme --skipreview --noconfirm --removemake" | 
 #echo "cd && paru -S spotify spotify-adblock-git mpv-git popcorntime-bin --skipreview --noconfirm --removemake" | $CHROOT su "$USR"
 #echo "cd && paru -S whatsapp-nativefier telegram-desktop-bin simplescreenrecorder --skipreview --noconfirm --removemake" | $CHROOT su "$USR"
 #echo "cd && paru -S cmatrix-git transmission-gtk3 qogir-icon-theme --skipreview --noconfirm --removemake" | $CHROOT su "$USR"
+sleep 3
+confir
+clear
 
 #   instalando core-gtk-theme
 echo -e "\t\e[33m----------------------------------------\e[0m"
@@ -532,7 +518,24 @@ echo -e "\t\e[33mDescargando e instalando core-gtk-theme.\e[0m"
 echo -e "\t\e[33m----------------------------------------\e[0m"
 sleep 3
 echo "cd && git clone https://github.com/ArchItalia/core-gtk-theme.git && cd core-gtk-theme && makepkg -si --noconfirm && cd" | $CHROOT su "$USR"
-
+confir
+sleep 3
+clear
+# instalando core-gnome-backgroun
+echo -e "\t\e[33m------------------------------------------------\e[0m"
+echo -e "\t\e[33mDescargando e instalando core-gnome-backgrounds.\e[0m"
+echo -e "\t\e[33m------------------------------------------------\e[0m"
+sleep 3
+echo "cd && git clone https://github.com/ArchItalia/core-gnome-backgrounds.git && cd core-gnome-backgrounds && makepkg -si --noconfirm && cd" | $CHROOT su "$USR"
+confir
+sleep 3
+clear
+#	instalando architalia-fonts 
+echo -e "\t\e[33m------------------------------------------\e[0m"
+echo -e "\t\e[33mDescargando e instalando Architalia-fonts.\e[0m"
+echo -e "\t\e[33m------------------------------------------\e[0m"
+sleep 3
+echo "cd && git clone https://github.com/ArchItalia/architalia-fonts.git && cd architalia-fonts && makepkg -si --noconfirm && cd" | $CHROOT su "$USR"
 sleep 3
 confir
 echo ""
@@ -554,6 +557,11 @@ rm -rf /mnt/home/"$USR"/.cache/paru/
 rm -rf /mnt/home/"$USR"/.cache/electron/
 rm -rf /mnt/home/"$USR"/.cache/go-build/
 rm -rf /mnt/home/"$USR"/{paru,.cargo,.rustup}
+
+$CHROOT pacman -Scc
+$CHROOT pacman -Rns go --noconfirm >/dev/null 2>&1
+$CHROOT pacman -Rns "$(pacman -Qtdq)" >/dev/null 2>&1
+$CHROOT fstrim -av >/dev/null
 sleep 2
 confir
 clear
